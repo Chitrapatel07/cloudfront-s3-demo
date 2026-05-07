@@ -1,0 +1,29 @@
+name: PR Check
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  check-html:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check if index.html exists
+        run: |
+          if [ ! -f index.html ]; then
+            echo "index.html missing!"
+            exit 1
+          fi
+
+      - name: Check for DEV keyword
+        run: |
+          if grep -q "DEV" index.html; then
+            echo "DEV content detected ❌"
+            exit 1
+          else
+            echo "Clean content ✅"
+          fi
