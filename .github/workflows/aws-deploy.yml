@@ -9,6 +9,8 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      S3_BUCKET: ${{ github.ref_name == 'main' && 'chitra-cloudfront-demo-2026' || 'chitra-cloudfront-staging-2026' }}
 
     permissions:
       id-token: write
@@ -26,7 +28,7 @@ jobs:
 
       - name: Sync files to S3
         run: |
-          aws s3 sync . s3://chitra-cloudfront-staging-2026 --delete \
+          aws s3 sync . s3://${{ env.S3_BUCKET }} --delete \
             --exclude ".git/*" \
             --exclude ".github/*" \
             --exclude ".gitignore" \
