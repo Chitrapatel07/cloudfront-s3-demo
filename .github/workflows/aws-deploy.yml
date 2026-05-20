@@ -23,14 +23,12 @@ jobs:
           aws-region: eu-north-1
 
       - name: Sync files to S3
-        - name: Sync files to S3
-  run: |
-    aws s3 sync . s3://YOUR_BUCKET_NAME --delete \
-      --exclude ".git/*" \
-      --exclude ".github/*" \
-      --exclude ".gitignore" \
-      --exclude "README.md"
-
+        run: |
+          aws s3 sync . s3://YOUR_BUCKET_NAME --delete \
+            --exclude ".git/*" \
+            --exclude ".github/*" \
+            --exclude ".gitignore" \
+            --exclude "README.md"
 
       - name: Invalidate CloudFront cache
         run: |
