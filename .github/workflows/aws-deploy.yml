@@ -2,11 +2,19 @@ name: Deploy to S3 and CloudFront
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - dev
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
+    environment:
+      name: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
+      
+    env:
+      S3_BUCKET: ${{ github.ref_name == 'main' && 'chitra-cloudfront-demo-2026' || 'chitra-cloudfront-staging-2026' }}
 
     permissions:
       id-token: write
@@ -23,8 +31,12 @@ jobs:
           aws-region: eu-north-1
 
       - name: Sync files to S3
-        run: aws s3 sync . s3://chitra-cloudfront-demo-2026 --delete --exclude ".git/*" --exclude ".github/*"
-
+        run: |
+          aws s3 sync . s3://${{ env.S3_BUCKET }} --delete \
+            --exclude ".git/*" \
+            --exclude ".github/*" \
+            --exclude ".gitignore" \
+            --exclude "README.md"
 
       - name: Invalidate CloudFront cache
         run: |
