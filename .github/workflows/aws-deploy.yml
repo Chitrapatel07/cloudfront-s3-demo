@@ -9,6 +9,10 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
+    environment:
+      name: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
+      
     env:
       S3_BUCKET: ${{ github.ref_name == 'main' && 'chitra-cloudfront-demo-2026' || 'chitra-cloudfront-staging-2026' }}
 
